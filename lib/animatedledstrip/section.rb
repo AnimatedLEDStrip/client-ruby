@@ -32,14 +32,11 @@ class Section
 
   def json
     raise TypeError unless @name.is_a? String
-    raise TypeError unless @num_leds.is_a? Integer
     raise TypeError unless @start_pixel.is_a? Integer
     raise TypeError unless @end_pixel.is_a? Integer
-    raise TypeError unless @physical_start.is_a? Integer
 
-    "SECT:{\"name\":\"#{@name}\",\"numLEDs\":#{@num_leds},"\
-    "\"startPixel\":#{@start_pixel},\"endPixel\":#{@end_pixel},"\
-    "\"physicalStart\":#{@physical_start}}"
+    "SECT:{\"name\":\"#{@name}\","\
+    "\"startPixel\":#{@start_pixel},\"endPixel\":#{@end_pixel}}"
   end
 
   def self.new_from_json(json_data)
