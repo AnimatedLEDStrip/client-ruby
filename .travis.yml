@@ -4,6 +4,10 @@ language: ruby
 rvm:
   - 2.6.6
 
+before_install:
+  - gem update --system
+  - gem install bundler --no-document
+
 branches:
   only:
     - master
@@ -18,15 +22,9 @@ stages:
 jobs:
   include:
     - stage: test
-      before_install:
-        - gem update --system
-        - gem install bundler --no-document
       script: bundle exec rake
 
     - stage: deploy
-      before_install:
-        - gem update --system
-        - gem install bundler --no-document
       install: skip
       script: skip
       deploy:
