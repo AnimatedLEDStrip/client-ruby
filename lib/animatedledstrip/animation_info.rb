@@ -18,18 +18,33 @@
 #   OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 #   THE SOFTWARE.
 
-module Direction
-  FORWARD = 0
-  BACKWARD = 1
+require_relative 'param_usage'
 
-  def self.string(direction)
-    case direction
-    when FORWARD
-      'FORWARD'
-    when BACKWARD
-      'BACKWARD'
-    else
-      'FORWARD'
-    end
+#noinspection RubyTooManyInstanceVariablesInspection
+class AnimationInfo
+  attr_accessor :name, :abbr, :description,
+                :signature_file, :repetitive,
+                :minimum_colors, :unlimited_colors,
+                :center, :delay, :direction,
+                :distance, :spacing, :delay_default,
+                :distance_default, :spacing_default
+
+  def initialize
+    @name = ''
+    @abbr = ''
+    @description = ''
+    @signature_file = ''
+    @repetitive = false
+    @minimum_colors = 0
+    @unlimited_colors = false
+    @center = ParamUsage::NOTUSED
+    @delay = ParamUsage::NOTUSED
+    @direction = ParamUsage::NOTUSED
+    @distance = ParamUsage::NOTUSED
+    @spacing = ParamUsage::NOTUSED
+    @delay_default = 50
+    @distance_default = -1
+    @spacing_default = 3
   end
+
 end

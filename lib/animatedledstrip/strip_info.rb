@@ -18,18 +18,17 @@
 #   OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 #   THE SOFTWARE.
 
-module Direction
-  FORWARD = 0
-  BACKWARD = 1
+class StripInfo
+  attr_accessor :num_leds, :pin, :image_debugging,
+                :file_name, :renders_before_save,
+                :thread_count
 
-  def self.string(direction)
-    case direction
-    when FORWARD
-      'FORWARD'
-    when BACKWARD
-      'BACKWARD'
-    else
-      'FORWARD'
-    end
+  def initialize
+    @num_leds = 0
+    @pin = -1
+    @image_debugging = false
+    @file_name = ""
+    @renders_before_save = -1
+    @thread_count = 100
   end
 end

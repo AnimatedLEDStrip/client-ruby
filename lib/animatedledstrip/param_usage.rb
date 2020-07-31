@@ -18,18 +18,18 @@
 #   OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 #   THE SOFTWARE.
 
-module Direction
-  FORWARD = 0
-  BACKWARD = 1
+module ParamUsage
+  USED = 0
+  NOTUSED = 1
 
-  def self.string(direction)
-    case direction
-    when FORWARD
-      'FORWARD'
-    when BACKWARD
-      'BACKWARD'
+  def self.string(param_usage)
+    case param_usage
+    when USED
+      'USED'
+    when NOTUSED
+      'NOTUSED'
     else
-      'FORWARD'
+      'NOTUSED'
     end
   end
 end

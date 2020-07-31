@@ -18,8 +18,8 @@
 #   OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 #   THE SOFTWARE.
 
-require_relative 'direction'
-require_relative 'color_container'
+require_relative "direction"
+require_relative "color_container"
 
 #noinspection RubyTooManyInstanceVariablesInspection
 class AnimationData
@@ -29,7 +29,7 @@ class AnimationData
                 :section, :spacing
 
   def initialize
-    @animation = 'Color'
+    @animation = "Color"
     @colors = []
     @center = -1
     @continuous = nil
@@ -37,8 +37,8 @@ class AnimationData
     @delay_mod = 1.0
     @direction = Direction::FORWARD
     @distance = -1
-    @id = ''
-    @section = ''
+    @id = ""
+    @section = ""
     @spacing = -1
   end
 
