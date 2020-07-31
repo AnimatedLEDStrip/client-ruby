@@ -23,10 +23,11 @@ require "socket"
 require_relative "animation_data"
 require_relative "animation_info"
 require_relative "end_animation"
+require_relative "strip_info"
 
 class AnimationSender
-  attr_accessor :address, :port, :running_animations,
-                :supported_animations
+  attr_accessor :address, :port, :strip_info,
+                :running_animations, :supported_animations
 
   def initialize(address, port)
     @address = address
@@ -52,6 +53,10 @@ class AnimationSender
             json = JSON.parse (line.delete_prefix "END :").delete_suffix(";;;")
             anim = EndAnimation.new_from_json json
             @running_animations.delete anim.id
+          elsif line.start_with? "SINF:"
+            json = JSON.parse (line.delete_prefix "SINF:").delete_suffix(";;;")
+            info = StripInfo.new_from_json json
+            @strip_info = info
           end
         end
       rescue IOError
