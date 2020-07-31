@@ -50,7 +50,7 @@ class AnimationData
 
   # @return [String]
   def json
-    raise TypeError unless @animation.is_a? Integer
+    raise TypeError unless @animation.is_a? String
     raise TypeError unless @colors.is_a? Array
     raise TypeError unless @center.is_a? Integer
     unless @continuous.is_a?(TrueClass) || @continuous.is_a?(FalseClass) || @continuous.nil?
@@ -78,7 +78,7 @@ class AnimationData
     "\"direction\":\"#{Direction.string(@direction)}\","\
     "\"distance\":#{@distance},"\
     "\"id\":\"#{@id}\","\
-    "\"section\":\"#{section}\""\
-    "\"spacing\":#{@spacing},"
+    "\"section\":\"#{section}\","\
+    "\"spacing\":#{@spacing}}"
   end
 end

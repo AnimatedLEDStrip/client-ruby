@@ -84,7 +84,7 @@ class AnimationDataTest < Minitest::Test
   def test_json_animation_failure
     anim = AnimationData.new
 
-    anim.animation = "A"
+    anim.animation = 5
     assert_raises TypeError do
       anim.json
     end
@@ -145,20 +145,18 @@ class AnimationDataTest < Minitest::Test
   end
 
   def test_json_id_failure
-    skip
     anim = AnimationData.new
 
-    anim.id = nil
+    anim.id = 5
     assert_raises TypeError do
       anim.json
     end
   end
 
   def test_json_section_failure
-    skip
     anim = AnimationData.new
 
-    anim.section = nil
+    anim.section = 5
     assert_raises TypeError do
       anim.json
     end
