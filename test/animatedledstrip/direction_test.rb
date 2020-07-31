@@ -18,7 +18,7 @@
 #   OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 #   THE SOFTWARE.
 
-require_relative "helper"
+require_relative "../test_helper"
 require "minitest"
 require_relative "../../lib/animatedledstrip/direction"
 
