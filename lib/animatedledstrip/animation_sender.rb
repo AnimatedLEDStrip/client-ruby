@@ -22,6 +22,7 @@ require "json"
 require "socket"
 require_relative "animation_data"
 require_relative "animation_info"
+require_relative "end_animation"
 
 class AnimationSender
   attr_accessor :address, :port, :running_animations,
@@ -39,31 +40,42 @@ class AnimationSender
     @receive_thread = Thread.new {
       begin
         while (line = @socket.gets ";;;")
-          if line.start_with? "AINF:"
-            json = JSON.parse (line.delete_prefix "AINF:").delete_suffix(";;;")
-            info = AnimationInfo.new_from_json json
-            @supported_animations[info.name] = info
-          elsif line.start_with? "DATA:"
+          if line.start_with? "DATA:"
             json = JSON.parse (line.delete_prefix "DATA:").delete_suffix(";;;")
             data = AnimationData::new_from_json json
             @running_animations[data.id] = data
+          elsif line.start_with? "AINF:"
+            json = JSON.parse (line.delete_prefix "AINF:").delete_suffix(";;;")
+            info = AnimationInfo.new_from_json json
+            @supported_animations[info.name] = info
+          elsif line.start_with? "END :"
+            json = JSON.parse (line.delete_prefix "END :").delete_suffix(";;;")
+            anim = EndAnimation.new_from_json json
+            @running_animations.delete anim.id
           end
-          end
-          rescue IOError
-# ignored
         end
-        }
+      rescue IOError
+# ignored
       end
+    }
+  end
 
-      def end
-        @socket.close
-        @receive_thread.join
-      end
+  def end
+    @socket.close
+    @receive_thread.join
+  end
 
-      def send_animation(animation)
-        raise TypeError unless animation.is_a? AnimationData
+  def send_animation(animation)
+    raise TypeError unless animation.is_a? AnimationData
 
-        @socket.write animation.json
-      end
+    @socket.write(animation.json + ";;;")
+  end
+
+  def send_end_animation(end_animation)
+    raise TypeError unless end_animation.is_a? EndAnimation
+
+    @socket.write(end_animation.json + ";;;")
 
   end
+
+end

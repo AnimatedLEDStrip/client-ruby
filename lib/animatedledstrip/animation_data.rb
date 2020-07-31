@@ -70,7 +70,7 @@ class AnimationData
     '"colors":['
     @colors.each { |cc| str += "#{cc.json}," }
     str.delete_suffix! ','
-    str + '],'\
+    str += '],'\
     "\"center\":#{@center},"\
     "\"continuous\":#{@continuous.nil? ? 'null' : @continuous},"\
     "\"delay\":#{@delay},"\
@@ -80,6 +80,8 @@ class AnimationData
     "\"id\":\"#{@id}\","\
     "\"section\":\"#{section}\","\
     "\"spacing\":#{@spacing}}"
+
+    str
   end
 
   def self.new_from_json(json_data)

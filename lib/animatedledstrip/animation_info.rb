@@ -30,10 +30,10 @@ class AnimationInfo
                 :distance_default, :spacing_default
 
   def initialize
-    @name = ''
-    @abbr = ''
-    @description = ''
-    @signature_file = ''
+    @name = ""
+    @abbr = ""
+    @description = ""
+    @signature_file = ""
     @repetitive = false
     @minimum_colors = 0
     @unlimited_colors = false
