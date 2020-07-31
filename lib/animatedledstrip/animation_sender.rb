@@ -23,17 +23,20 @@ require "socket"
 require_relative "animation_data"
 require_relative "animation_info"
 require_relative "end_animation"
+require_relative "section"
 require_relative "strip_info"
 
 class AnimationSender
   attr_accessor :address, :port, :strip_info,
-                :running_animations, :supported_animations
+                :running_animations, :supported_animations,
+                :sections
 
   def initialize(address, port)
     @address = address
     @port = port
     @running_animations = {}
     @supported_animations = {}
+    @sections = {}
   end
 
   def start
@@ -54,6 +57,10 @@ class AnimationSender
             json = JSON.parse (line.delete_prefix "END :").delete_suffix(";;;")
             anim = EndAnimation.new_from_json json
             @running_animations.delete anim.id
+          elsif line.start_with? "SECT:"
+            json = JSON.parse (line.delete_prefix "SECT:").delete_suffix(";;;")
+            sect = Section.new_from_json json
+            @sections[sect.name] = sect
           elsif line.start_with? "SINF:"
             json = JSON.parse (line.delete_prefix "SINF:").delete_suffix(";;;")
             info = StripInfo.new_from_json json
@@ -81,7 +88,12 @@ class AnimationSender
     raise TypeError unless end_animation.is_a? EndAnimation
 
     @socket.write(end_animation.json + ";;;")
+  end
 
+  def send_section(section)
+    raise TypeError unless section.is_a? Section
+
+    @socket.write(section.json + ";;;")
   end
 
 end

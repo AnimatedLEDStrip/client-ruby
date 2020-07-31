@@ -29,7 +29,7 @@ class AnimationDataTest < Minitest::Test
     assert_equal "Color", anim.animation
     assert_equal(-1, anim.center)
     assert_nil anim.continuous
-    assert_equal -1, anim.delay
+    assert_equal(-1, anim.delay)
     assert_equal 1.0, anim.delay_mod
     assert_equal Direction::FORWARD, anim.direction
     assert_equal(-1, anim.distance)
