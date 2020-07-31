@@ -33,8 +33,10 @@ module ParamUsage
     end
   end
 
-  def self.from_string(param_usage)
-    case param_usage
+  def self.from_string(param_usage_str)
+    raise TypeError unless param_usage_str.is_a? String
+
+    case param_usage_str.upcase
     when "USED"
       USED
     when "NOTUSED"

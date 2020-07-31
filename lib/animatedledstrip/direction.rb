@@ -34,7 +34,9 @@ module Direction
   end
 
   def self.from_string(direction_str)
-    case direction_str
+    raise TypeError unless direction_str.is_a? String
+
+    case direction_str.upcase
     when "FORWARD"
       FORWARD
     when "BACKWARD"

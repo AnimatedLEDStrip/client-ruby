@@ -20,22 +20,36 @@
 
 require_relative "../test_helper"
 require "minitest"
-require_relative "../../lib/animatedledstrip/direction"
+require_relative "../../lib/animatedledstrip/end_animation"
 
-class DirectionTest < Minitest::Test
-  def test_direction_string
-    assert_equal "FORWARD", Direction.string(Direction::FORWARD)
-    assert_equal "BACKWARD", Direction.string(Direction::BACKWARD)
-    assert_equal "FORWARD", Direction.string(-1)
+class EndAnimationTest < Minitest::Test
+  def test_initialization
+    anim = EndAnimation.new
+
+    assert_equal "", anim.id
   end
 
-  def test_direction_from_string
-    assert_equal Direction::FORWARD, Direction::from_string("FORwaRD")
-    assert_equal Direction::BACKWARD, Direction::from_string("BAcKwARD")
-    assert_equal Direction::FORWARD, Direction::from_string("-1")
+  def test_json
+    anim = EndAnimation.new
+    anim.id = "TEST"
 
+    assert_equal 'END :{"id":"TEST"}', anim.json
+  end
+
+  def test_json_id_failure
+    anim = EndAnimation.new
+
+    anim.id = 5
     assert_raises TypeError do
-      Direction::from_string -1
+      anim.json
     end
+  end
+
+  def test_from_json
+    json_str = '{"id":"TEST_ANIM"}'
+
+    anim = EndAnimation.new_from_json JSON.parse(json_str)
+
+    assert_equal "TEST_ANIM", anim.id
   end
 end

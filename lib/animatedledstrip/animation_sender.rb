@@ -41,6 +41,7 @@ class AnimationSender
     @receive_thread = Thread.new {
       begin
         while (line = @socket.gets ";;;")
+          puts line
           if line.start_with? "DATA:"
             json = JSON.parse (line.delete_prefix "DATA:").delete_suffix(";;;")
             data = AnimationData::new_from_json json

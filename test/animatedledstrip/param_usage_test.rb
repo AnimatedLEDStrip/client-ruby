@@ -20,22 +20,22 @@
 
 require_relative "../test_helper"
 require "minitest"
-require_relative "../../lib/animatedledstrip/direction"
+require_relative "../../lib/animatedledstrip/param_usage"
 
-class DirectionTest < Minitest::Test
-  def test_direction_string
-    assert_equal "FORWARD", Direction.string(Direction::FORWARD)
-    assert_equal "BACKWARD", Direction.string(Direction::BACKWARD)
-    assert_equal "FORWARD", Direction.string(-1)
+class ParamUsageTest < Minitest::Test
+  def test_string
+    assert_equal "USED", ParamUsage::string(ParamUsage::USED)
+    assert_equal "NOTUSED", ParamUsage::string(ParamUsage::NOTUSED)
+    assert_equal "NOTUSED", ParamUsage::string(-1)
   end
 
-  def test_direction_from_string
-    assert_equal Direction::FORWARD, Direction::from_string("FORwaRD")
-    assert_equal Direction::BACKWARD, Direction::from_string("BAcKwARD")
-    assert_equal Direction::FORWARD, Direction::from_string("-1")
+  def test_from_string
+    assert_equal ParamUsage::USED, ParamUsage::from_string("USeD")
+    assert_equal ParamUsage::NOTUSED, ParamUsage::from_string("NotUSEd")
+    assert_equal ParamUsage::NOTUSED, ParamUsage::from_string("-1")
 
     assert_raises TypeError do
-      Direction::from_string -1
+      ParamUsage::from_string -1
     end
   end
 end

@@ -20,22 +20,29 @@
 
 require_relative "../test_helper"
 require "minitest"
-require_relative "../../lib/animatedledstrip/direction"
+require_relative "../../lib/animatedledstrip/strip_info"
 
-class DirectionTest < Minitest::Test
-  def test_direction_string
-    assert_equal "FORWARD", Direction.string(Direction::FORWARD)
-    assert_equal "BACKWARD", Direction.string(Direction::BACKWARD)
-    assert_equal "FORWARD", Direction.string(-1)
+class StripInfoTest < Minitest::Test
+  def test_initialization
+    info = StripInfo.new
+
+    assert_equal 0, info.num_leds
+    assert_equal -1, info.pin
+    assert_equal false, info.image_debugging
+    assert_equal "", info.file_name
+    assert_equal -1, info.renders_before_save
+    assert_equal 100, info.thread_count
   end
 
-  def test_direction_from_string
-    assert_equal Direction::FORWARD, Direction::from_string("FORwaRD")
-    assert_equal Direction::BACKWARD, Direction::from_string("BAcKwARD")
-    assert_equal Direction::FORWARD, Direction::from_string("-1")
+  def test_from_json
+    json_str = '{"numLEDs":240,"pin":12,"imageDebugging":true,"rendersBeforeSave":1000,"threadCount":200}'
 
-    assert_raises TypeError do
-      Direction::from_string -1
-    end
+    info = StripInfo.new_from_json JSON.parse(json_str)
+
+    assert_equal 240, info.num_leds
+    assert_equal 12, info.pin
+    assert_equal true, info.image_debugging
+    assert_equal 1000, info.renders_before_save
+    assert_equal 200, info.thread_count
   end
 end

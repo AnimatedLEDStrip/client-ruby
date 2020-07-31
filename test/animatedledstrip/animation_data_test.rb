@@ -27,15 +27,15 @@ class AnimationDataTest < Minitest::Test
     anim = AnimationData.new
 
     assert_equal "Color", anim.animation
-    assert_equal(-1, anim.center)
+    assert_equal -1, anim.center
     assert_nil anim.continuous
-    assert_equal(-1, anim.delay)
+    assert_equal -1, anim.delay
     assert_equal 1.0, anim.delay_mod
     assert_equal Direction::FORWARD, anim.direction
-    assert_equal(-1, anim.distance)
+    assert_equal -1, anim.distance
     assert_equal "", anim.id
     assert_equal "", anim.section
-    assert_equal(-1, anim.spacing)
+    assert_equal -1, anim.spacing
   end
 
   def test_add_color
@@ -184,5 +184,32 @@ class AnimationDataTest < Minitest::Test
     assert_raises TypeError do
       anim.json
     end
+  end
+
+  def test_from_json
+    json_str = '{"animation":"Meteor","colors":[{'\
+               '"colors":[255,65280]},{"colors":[16711680]}],"center":50,'\
+               '"continuous":false,"delay":10,"delayMod":1.5,'\
+               '"direction":"BACKWARD","distance":45,'\
+               '"id":"TEST","section":"SECT","spacing":5}'
+
+    anim = AnimationData.new_from_json JSON.parse(json_str)
+
+    assert_equal "Meteor", anim.animation
+    assert_equal 50, anim.center
+    assert_instance_of Array, anim.colors
+    assert_instance_of ColorContainer, anim.colors[0]
+    assert_instance_of ColorContainer, anim.colors[1]
+    assert_equal anim.colors[0].colors[0], 0xFF
+    assert_equal anim.colors[0].colors[1], 0xFF00
+    assert_equal anim.colors[1].colors[0], 0xFF0000
+    assert_equal false, anim.continuous
+    assert_equal 10, anim.delay
+    assert_equal 1.5, anim.delay_mod
+    assert_equal Direction::BACKWARD, anim.direction
+    assert_equal 45, anim.distance
+    assert_equal "TEST", anim.id
+    assert_equal "SECT", anim.section
+    assert_equal 5, anim.spacing
   end
 end
