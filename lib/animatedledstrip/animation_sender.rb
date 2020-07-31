@@ -18,29 +18,52 @@
 #   OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 #   THE SOFTWARE.
 
-require 'socket'
-require_relative 'animation_data'
+require "json"
+require "socket"
+require_relative "animation_data"
+require_relative "animation_info"
 
 class AnimationSender
-  attr_accessor :address, :port
+  attr_accessor :address, :port, :running_animations,
+                :supported_animations
 
   def initialize(address, port)
     @address = address
     @port = port
+    @running_animations = {}
+    @supported_animations = {}
   end
 
   def start
     @socket = TCPSocket.new @address, @port
+    @receive_thread = Thread.new {
+      begin
+        while (line = @socket.gets ";;;")
+          if line.start_with? "AINF:"
+            json = JSON.parse (line.delete_prefix "AINF:").delete_suffix(";;;")
+            info = AnimationInfo.new_from_json json
+            @supported_animations[info.name] = info
+          elsif line.start_with? "DATA:"
+            json = JSON.parse (line.delete_prefix "DATA:").delete_suffix(";;;")
+            data = AnimationData::new_from_json json
+            @running_animations[data.id] = data
+          end
+          end
+          rescue IOError
+# ignored
+        end
+        }
+      end
+
+      def end
+        @socket.close
+        @receive_thread.join
+      end
+
+      def send_animation(animation)
+        raise TypeError unless animation.is_a? AnimationData
+
+        @socket.write animation.json
+      end
+
   end
-
-  def end
-    @socket.close
-  end
-
-  def send_animation(animation)
-    raise TypeError unless animation.is_a? AnimationData
-
-    @socket.write animation.json
-  end
-
-end

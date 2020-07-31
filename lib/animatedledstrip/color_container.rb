@@ -42,4 +42,11 @@ class ColorContainer
     @colors.push(color)
   end
 
+  def self.new_from_json(json_str)
+    cc = ColorContainer.new
+    json_str["colors"].each { |c| cc.add_color c }
+
+    cc
+  end
+
 end

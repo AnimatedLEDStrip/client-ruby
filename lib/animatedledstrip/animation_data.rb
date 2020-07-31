@@ -81,4 +81,21 @@ class AnimationData
     "\"section\":\"#{section}\","\
     "\"spacing\":#{@spacing}}"
   end
+
+  def self.new_from_json(json_data)
+    data = AnimationData.new
+    data.animation = json_data["animation"] unless json_data["animation"].nil?
+    json_data["colors"].each { |cc| data.add_color(ColorContainer.new_from_json cc) }
+    data.center = json_data["center"] unless json_data["center"].nil?
+    data.continuous = json_data["continuous"]
+    data.delay = json_data["delay"] unless json_data["delay"].nil?
+    data.delay_mod = json_data["delayMod"] unless json_data["delayMod"].nil?
+    data.direction = Direction::from_string(json_data["direction"]) unless json_data["direction"].nil?
+    data.distance = json_data["distance"] unless json_data["distance"].nil?
+    data.id = json_data["id"] unless json_data["id"].nil?
+    data.section = json_data["section"] unless json_data["section"].nil?
+    data.spacing = json_data["spacing"] unless json_data["spacing"].nil?
+
+    data
+  end
 end

@@ -25,11 +25,22 @@ module ParamUsage
   def self.string(param_usage)
     case param_usage
     when USED
-      'USED'
+      "USED"
     when NOTUSED
-      'NOTUSED'
+      "NOTUSED"
     else
-      'NOTUSED'
+      "NOTUSED"
+    end
+  end
+
+  def self.from_string(param_usage)
+    case param_usage
+    when "USED"
+      USED
+    when "NOTUSED"
+      NOTUSED
+    else
+      NOTUSED
     end
   end
 end

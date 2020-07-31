@@ -25,11 +25,22 @@ module Direction
   def self.string(direction)
     case direction
     when FORWARD
-      'FORWARD'
+      "FORWARD"
     when BACKWARD
-      'BACKWARD'
+      "BACKWARD"
     else
-      'FORWARD'
+      "FORWARD"
+    end
+  end
+
+  def self.from_string(direction_str)
+    case direction_str
+    when "FORWARD"
+      FORWARD
+    when "BACKWARD"
+      BACKWARD
+    else
+      FORWARD
     end
   end
 end
