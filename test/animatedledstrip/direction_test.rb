@@ -35,7 +35,7 @@ class DirectionTest < Minitest::Test
     assert_equal Direction::FORWARD, Direction::from_string("-1")
 
     assert_raises TypeError do
-      Direction::from_string -1
+      Direction::from_string(-1)
     end
   end
 end

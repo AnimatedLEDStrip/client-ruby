@@ -27,15 +27,15 @@ class AnimationDataTest < Minitest::Test
     anim = AnimationData.new
 
     assert_equal "Color", anim.animation
-    assert_equal -1, anim.center
+    assert_equal(-1, anim.center)
     assert_nil anim.continuous
     assert_equal -1, anim.delay
     assert_equal 1.0, anim.delay_mod
     assert_equal Direction::FORWARD, anim.direction
-    assert_equal -1, anim.distance
+    assert_equal(-1, anim.distance)
     assert_equal "", anim.id
     assert_equal "", anim.section
-    assert_equal -1, anim.spacing
+    assert_equal(-1, anim.spacing)
   end
 
   def test_add_color

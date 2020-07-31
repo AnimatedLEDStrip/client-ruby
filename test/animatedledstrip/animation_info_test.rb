@@ -39,7 +39,7 @@ class AnimationInfoTest < Minitest::Test
     assert_equal ParamUsage::NOTUSED, info.distance
     assert_equal ParamUsage::NOTUSED, info.spacing
     assert_equal 50, info.delay_default
-    assert_equal -1, info.distance_default
+    assert_equal(-1, info.distance_default)
     assert_equal 3, info.spacing_default
   end
 
@@ -65,7 +65,7 @@ class AnimationInfoTest < Minitest::Test
     assert_equal ParamUsage::NOTUSED, info.distance
     assert_equal ParamUsage::NOTUSED, info.spacing
     assert_equal 10, info.delay_default
-    assert_equal -1, info.distance_default
+    assert_equal(-1, info.distance_default)
     assert_equal 3, info.spacing_default
   end
 end

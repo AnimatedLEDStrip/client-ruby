@@ -27,10 +27,10 @@ class StripInfoTest < Minitest::Test
     info = StripInfo.new
 
     assert_equal 0, info.num_leds
-    assert_equal -1, info.pin
+    assert_equal( -1, info.pin)
     assert_equal false, info.image_debugging
     assert_equal "", info.file_name
-    assert_equal -1, info.renders_before_save
+    assert_equal(-1, info.renders_before_save)
     assert_equal 100, info.thread_count
   end
 

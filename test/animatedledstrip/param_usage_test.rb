@@ -35,7 +35,7 @@ class ParamUsageTest < Minitest::Test
     assert_equal ParamUsage::NOTUSED, ParamUsage::from_string("-1")
 
     assert_raises TypeError do
-      ParamUsage::from_string -1
+      ParamUsage::from_string(-1)
     end
   end
 end
