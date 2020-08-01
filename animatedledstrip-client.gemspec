@@ -7,7 +7,7 @@ Gem::Specification.new do |spec|
   spec.authors       = ["Max Narvaez"]
   spec.email         = ["mnmax.narvaez3@gmail.com"]
 
-  spec.summary       = "Library for connecting to an AnimatedLEDStripServer"
+  spec.summary       = "Library for connecting to an AnimatedLEDStrip server"
   spec.homepage      = "https://github.com/AnimatedLEDStrip/client-ruby"
   spec.license       = "MIT"
 
