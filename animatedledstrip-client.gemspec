@@ -3,7 +3,7 @@ $LOAD_PATH.unshift(lib) unless $LOAD_PATH.include?(lib)
 
 Gem::Specification.new do |spec|
   spec.name          = "animatedledstrip-client"
-  spec.version       = "0.6.1"
+  spec.version       = "0.7"
   spec.authors       = ["Max Narvaez"]
   spec.email         = ["mnmax.narvaez3@gmail.com"]
 
