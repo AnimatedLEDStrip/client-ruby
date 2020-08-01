@@ -40,7 +40,9 @@ sender.end
 ```
 
 ## Sending Data
-An animation can be sent to the server by creating an `AnimationData` instance, then calling `sendAnimation` with the instance as the argument.
+
+### AnimationData
+An animation can be sent to the server by creating an `AnimationData` instance, then calling `send_animation` with the instance as the argument.
 
 ```ruby
 cc = ColorContainer.new
@@ -53,10 +55,47 @@ data.add_color cc
 sender.send_animation data
 ```
 
+### EndAnimation
+The end of an animation can be sent to the server by creating an `EndAnimation` instance, then calling `send_end_animation` with the instance as the argument.
+
+```ruby
+end_anim = EndAnimation.new
+end_anim.id = "ANIM_ID"
+
+sender.send_end_animation end_anim
+```
+
+### Section
+A new section can be sent to the server by creating a `Section` instance, then calling `send_section` with the instance as the argument.
+Note that changing `num_leds` or `physical_start` will have no effect on the new section.
+
+```ruby
+sect = Section.new
+sect.name = "SECTION"
+sect.start_pixel = 5
+sect.end_pixel = 30
+
+sender.send_section sect
+```
+
 #### `AnimationData` type notes
 The Ruby library uses the following values for `continuous` and `direction`:
 - `continuous`: `nil`, `true`, `false`
 - `direction`: `Direction::FORWARD`, `Direction::BACKWARD`
 
 ## Receiving Data
-Currently the Ruby library only supports sending data.
+
+### Supported Animations
+Supported animations are stored in the sender's `supported_animations` hash.
+
+### Running Animations
+Running animations are stored in the sender's `running_animations` hash.
+
+### Ending Animations
+Animations are removed from the sender's `running_animations` hash.
+
+### New Section
+Sections are stored in the sender's `sections` hash.
+
+### Strip Info
+The strip's info is stored in the sender's `strip_info` attribute.

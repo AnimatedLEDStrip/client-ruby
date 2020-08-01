@@ -73,9 +73,14 @@ class AnimationSender
     }
   end
 
+  #noinspection RubyUnusedLocalVariable
   def end
     @socket.close
     @receive_thread.join
+    strip_info = nil
+    running_animations = {}
+    supported_animations = {}
+    sections = {}
   end
 
   def send_animation(animation)
