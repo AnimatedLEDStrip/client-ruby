@@ -23,13 +23,23 @@ require "socket"
 require_relative "animation_data"
 require_relative "animation_info"
 require_relative "end_animation"
+require_relative "message"
 require_relative "section"
 require_relative "strip_info"
 
+#noinspection RubyTooManyInstanceVariablesInspection
 class AnimationSender
-  attr_accessor :address, :port, :strip_info,
-                :running_animations, :supported_animations,
-                :sections
+  attr_accessor :address, :port, :started, :connected,
+                :running_animations, :sections,
+                :supported_animations, :strip_info,
+                :on_connect_callback, :on_disconnect_callback,
+                :on_unable_to_connect_callback, :on_receive_callback,
+                :on_new_animation_data_callback,
+                :on_new_animation_info_callback,
+                :on_new_end_animation_callback,
+                :on_new_message_callback,
+                :on_new_section_callback,
+                :on_new_strip_info_callback
 
   def initialize(address, port)
     @address = address
@@ -40,65 +50,119 @@ class AnimationSender
   end
 
   def start
-    @socket = TCPSocket.new @address, @port
-    @receive_thread = Thread.new {
-      begin
-        while (line = @socket.gets ";;;")
-          puts line
-          if line.start_with? "DATA:"
-            json = JSON.parse (line.delete_prefix "DATA:").delete_suffix(";;;")
-            data = AnimationData::new_from_json json
-            @running_animations[data.id] = data
-          elsif line.start_with? "AINF:"
-            json = JSON.parse (line.delete_prefix "AINF:").delete_suffix(";;;")
-            info = AnimationInfo.new_from_json json
-            @supported_animations[info.name] = info
-          elsif line.start_with? "END :"
-            json = JSON.parse (line.delete_prefix "END :").delete_suffix(";;;")
-            anim = EndAnimation.new_from_json json
-            @running_animations.delete anim.id
-          elsif line.start_with? "SECT:"
-            json = JSON.parse (line.delete_prefix "SECT:").delete_suffix(";;;")
-            sect = Section.new_from_json json
-            @sections[sect.name] = sect
-          elsif line.start_with? "SINF:"
-            json = JSON.parse (line.delete_prefix "SINF:").delete_suffix(";;;")
-            info = StripInfo.new_from_json json
-            @strip_info = info
-          end
-        end
-      rescue IOError
-# ignored
-      end
-    }
+    return if @started
+
+    @running_animations = {}
+    @sections = {}
+    @supported_animations = {}
+    @strip_info = nil
+
+    @started = true
+
+    begin
+      @connection = Socket.tcp @address, @port, nil, nil, {
+          connect_timeout: 2
+      }
+    rescue SocketError
+      @on_unable_to_connect_callback.call(@address, @port)
+      @started = false
+      @connected = false
+      return
+    end
+
+    @connected = true
+    @on_connect_callback.call(@address, @port)
+
+    @receive_thread = Thread.new { receive_data }
   end
 
   #noinspection RubyUnusedLocalVariable
   def end
-    @socket.close
+    return unless @connected
+    @started = false
+    @connected = false
+    #noinspection RubyNilAnalysis
+    @connection.close
     @receive_thread.join
-    strip_info = nil
-    running_animations = {}
-    supported_animations = {}
-    sections = {}
+  end
+
+  def receive_data
+    begin
+      while (line = @connection.gets ";;;")
+        process_data line
+      end
+    rescue IOError
+      @started = false
+      @connected = false
+      @on_disconnect_callback.call(address, port)
+    end
+  end
+
+  def process_data(line)
+    line = line.delete_suffix ";;;"
+
+    @on_receive_callback.call line
+
+    if line.start_with? "DATA:"
+      data = AnimationData::new_from_json JSON.parse(line.delete_prefix "DATA:")
+      @on_new_animation_data_callback.call data
+      @running_animations[data.id] = data
+    elsif line.start_with? "AINF:"
+      info = AnimationInfo.new_from_json JSON.parse(line.delete_prefix "AINF:")
+      @supported_animations[info.name] = info
+      @on_new_animation_info_callback.call info
+    elsif line.start_with? "CMD :"
+      puts "Receiving Command is not supported by client"
+    elsif line.start_with? "END :"
+      anim = EndAnimation.new_from_json JSON.parse(line.delete_prefix "END :")
+      @on_new_end_animation_callback.call anim
+      @running_animations.delete anim.id
+    elsif line.start_with? "MSG :"
+      msg = Message.new_from_json JSON.parse(line.delete_prefix "MSG :")
+      @on_new_message_callback.call msg
+    elsif line.start_with? "SECT:"
+      sect = Section.new_from_json JSON.parse(line.delete_prefix "SECT:")
+      @on_new_section_callback.call sect
+      @sections[sect.name] = sect
+    elsif line.start_with? "SINF:"
+      info = StripInfo.new_from_json JSON.parse(line.delete_prefix "SINF:")
+      @strip_info = info
+      @on_new_strip_info_callback.call info
+    else
+      puts "Unrecognized data type: #{line[0, 4]}"
+    end
+  end
+
+  def send(data)
+    raise IOError("Sender must be started") unless @started
+    raise IOError("Sender is not connected") unless @connected
+
+    #noinspection RubyNilAnalysis
+    @connection.write(data + ";;;")
   end
 
   def send_animation(animation)
     raise TypeError unless animation.is_a? AnimationData
 
-    @socket.write(animation.json + ";;;")
+    send(animation.json)
+  end
+
+  def send_command(command)
+    raise TypeError unless command.is_a? Command
+
+    send(command.json)
   end
 
   def send_end_animation(end_animation)
     raise TypeError unless end_animation.is_a? EndAnimation
 
-    @socket.write(end_animation.json + ";;;")
+    send(end_animation.json)
   end
 
   def send_section(section)
     raise TypeError unless section.is_a? Section
 
-    @socket.write(section.json + ";;;")
+    send(section.json)
   end
 
 end

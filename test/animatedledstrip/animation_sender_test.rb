@@ -29,4 +29,81 @@ class AnimationSenderTest < Minitest::Test
     assert_equal "10.0.0.254", sender.address
     assert_equal 5, sender.port
   end
+
+  def test_send
+    sender = AnimationSender.new "10.44.167.23", 6
+
+    assert_equal "10.44.167.23", sender.address
+    assert_equal 6, sender.port
+
+    sender.on_connect_callback = lambda { |ip, port| puts "#{ip} #{port}" }
+
+    sender.start
+
+    anim = AnimationData.new
+    anim.animation = "Meteor"
+    anim.center = 50
+    anim.continuous = nil
+    anim.delay = 10
+    anim.delay_mod = 1.5
+    anim.direction = Direction::BACKWARD
+    anim.distance = 45
+    anim.id = "TEST"
+    anim.section = ""
+    anim.spacing = 5
+
+    cc = ColorContainer.new
+    cc2 = ColorContainer.new
+    cc.add_color 0xFF
+    cc.add_color 0xFF00
+    cc2.add_color 0xFF0000
+
+    anim.add_color cc
+    anim.add_color cc2
+
+    sender.send_animation anim
+
+    sleep(2)
+
+    puts sender.strip_info
+    puts sender.running_animations
+
+    anim_end = EndAnimation.new
+    anim_end.id = sender.running_animations.keys.at 0
+
+    sender.send_end_animation anim_end
+
+    sleep(2)
+
+    puts sender.running_animations
+    puts sender.sections
+
+    sect = Section.new
+    sect.name = "S"
+    sect.start_pixel = 50
+    sect.end_pixel = 200
+
+    sender.send_section sect
+
+    sleep(2)
+
+    puts sender.sections
+    anim.section = "S"
+
+    sender.send_animation anim
+
+    sleep(2)
+
+    puts sender.running_animations
+
+    anim_end.id = sender.running_animations.keys.at 0
+
+    sender.send_end_animation anim_end
+
+    sleep(2)
+
+    puts sender.running_animations
+
+    sender.end
+  end
 end

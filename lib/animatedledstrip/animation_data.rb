@@ -48,6 +48,13 @@ class AnimationData
     colors.push(color)
   end
 
+  def color_json
+    str = '"colors":['
+    @colors.each { |cc| str += "#{cc.json}," }
+    str.delete_suffix! ','
+    str + ']'
+  end
+
   # @return [String]
   def json
     raise TypeError unless @animation.is_a? String
@@ -66,11 +73,8 @@ class AnimationData
 
     @colors.each { |cc| raise TypeError unless cc.is_a? ColorContainer }
 
-    str = "DATA:{\"animation\":\"#{@animation}\","\
-    '"colors":['
-    @colors.each { |cc| str += "#{cc.json}," }
-    str.delete_suffix! ','
-    str += '],'\
+    "DATA:{\"animation\":\"#{@animation}\","\
+    "#{color_json},"\
     "\"center\":#{@center},"\
     "\"continuous\":#{@continuous.nil? ? 'null' : @continuous},"\
     "\"delay\":#{@delay},"\
@@ -80,8 +84,6 @@ class AnimationData
     "\"id\":\"#{@id}\","\
     "\"section\":\"#{section}\","\
     "\"spacing\":#{@spacing}}"
-
-    str
   end
 
   def self.new_from_json(json_data)
