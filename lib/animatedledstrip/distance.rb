@@ -1,4 +1,4 @@
-#   Copyright (c) 2019-2020 AnimatedLEDStrip
+#   Copyright (c) 2018-2021 AnimatedLEDStrip
 #
 #   Permission is hereby granted, free of charge, to any person obtaining a copy
 #   of this software and associated documentation files (the "Software"), to deal
@@ -18,45 +18,50 @@
 #   OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 #   THE SOFTWARE.
 
-class Section
-  attr_accessor :name, :pixels, :parent_section_name
+class AbsoluteDistance
+  attr_accessor :x, :y, :z
 
-  def initialize(name = '', pixels = [], parent_section_name = '')
-    @name = name
-    @pixels = pixels
-    @parent_section_name = parent_section_name
+  #noinspection RubyInstanceVariableNamingConvention
+  def initialize(x = 0.0, y = 0.0, z = 0.0)
+    @x = x
+    @y = y
+    @z = z
   end
-
-  # def json
-  #   raise TypeError unless @name.is_a? String
-  #   raise TypeError unless @start_pixel.is_a? Integer
-  #   raise TypeError unless @end_pixel.is_a? Integer
-  #
-  #   "SECT:{\"name\":\"#{@name}\","\
-  #   "\"startPixel\":#{@start_pixel},\"endPixel\":#{@end_pixel}}"
-  # end
-  #
-  # def self.new_from_json(json_data)
-  #   sect = Section.new
-  #   sect.name = json_data["name"] unless json_data["name"].nil?
-  #   sect.num_leds = json_data["numLEDs"] unless json_data["numLEDs"].nil?
-  #   sect.start_pixel = json_data["startPixel"] unless json_data["startPixel"].nil?
-  #   sect.end_pixel = json_data["endPixel"] unless json_data["endPixel"].nil?
-  #   sect.physical_start = json_data["physicalStart"] unless json_data["physicalStart"].nil?
-  #
-  #   sect
-  # end
 
   def to_json(*args)
     {
         JSON.create_id => self.class.name,
-        :name => self.name,
-        :pixels => self.pixels,
-        :parentSectionName => self.parent_section_name
+        :x => self.x,
+        :y => self.y,
+        :z => self.z
     }.to_json(*args)
   end
 
   def self.json_create(object)
-    new(object['name'], object['pixels'], object['parentSectionName'])
+    new(object['x'], object['y'], object['z'])
+  end
+end
+
+class PercentDistance
+  attr_accessor :x, :y, :z
+
+  #noinspection RubyInstanceVariableNamingConvention
+  def initialize(x = 0.0, y = 0.0, z = 0.0)
+    @x = x
+    @y = y
+    @z = z
+  end
+
+  def to_json(*args)
+    {
+        JSON.create_id => self.class.name,
+        :x => self.x,
+        :y => self.y,
+        :z => self.z
+    }.to_json(*args)
+  end
+
+  def self.json_create(object)
+    new(object['x'], object['y'], object['z'])
   end
 end

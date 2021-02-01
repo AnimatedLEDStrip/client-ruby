@@ -18,29 +18,52 @@
 #   OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 #   THE SOFTWARE.
 
-class StripInfo
-  attr_accessor :num_leds, :pin, :image_debugging,
-                :file_name, :renders_before_save,
-                :thread_count
+require_relative 'als_json_decode'
 
-  def initialize
-    @num_leds = 0
-    @pin = -1
-    @image_debugging = false
-    @file_name = ""
-    @renders_before_save = -1
-    @thread_count = 100
+#noinspection RubyTooManyInstanceVariablesInspection
+class StripInfo
+  attr_accessor :num_leds, :pin, :render_delay,
+                :is_render_logging_enabled, :render_log_file,
+                :renders_between_log_saves, :is_1d_supported,
+                :is_2d_supported, :is_3d_supported, :led_locations
+
+  #noinspection RubyParameterNamingConvention
+  def initialize(num_leds = 0, pin = nil, render_delay = 10, is_render_logging_enabled = false,
+                 render_log_file = '', renders_between_log_saves = 1000, is_1d_supported = true,
+                 is_2d_supported = false, is_3d_supported = false, led_locations = nil)
+    @num_leds = num_leds
+    @pin = pin
+    @render_delay = render_delay
+    @is_render_logging_enabled = is_render_logging_enabled
+    @render_log_file = render_log_file
+    @renders_between_log_saves = renders_between_log_saves
+    @is_1d_supported = is_1d_supported
+    @is_2d_supported = is_2d_supported
+    @is_3d_supported = is_3d_supported
+    @led_locations = led_locations
   end
 
-  def self.new_from_json(json_data)
-    info = StripInfo.new
-    info.num_leds = json_data["numLEDs"] unless json_data["numLEDs"].nil?
-    info.pin = json_data["pin"] unless json_data["pin"].nil?
-    info.image_debugging = json_data["imageDebugging"] unless json_data["imageDebugging"].nil?
-    info.file_name = json_data["fileName"] unless json_data["fileName"].nil?
-    info.renders_before_save = json_data["rendersBeforeSave"] unless json_data["rendersBeforeSave"].nil?
-    info.thread_count = json_data["threadCount"] unless json_data["threadCount"].nil?
+  def to_json(*args)
+    {
+        JSON.create_id => self.class.name,
+        :numLEDs => self.num_leds,
+        :pin => self.pin,
+        :renderDelay => self.render_delay,
+        :isRenderLoggingEnabled => self.is_render_logging_enabled,
+        :renderLogFile => self.render_log_file,
+        :rendersBetweenLogSaves => self.renders_between_log_saves,
+        :is1DSupported => self.is_1d_supported,
+        :is2DSupported => self.is_2d_supported,
+        :is3DSupported => self.is_3d_supported,
+        :ledLocations => self.led_locations
+    }.to_json(*args)
+  end
 
-    info
+  def self.json_create(object)
+    locations = nil
+    locations = ALSJsonDecode.load_list_elements(object['ledLocations'], 'Location') unless object['ledLocations'].nil?
+    new(object['numLEDs'], object['pin'], object['renderDelay'], object['isRenderLoggingEnabled'],
+        object['renderLogFile'], object['rendersBetweenLogSaves'], object['is1DSupported'],
+        object['is2DSupported'], object['is3DSupported'], locations)
   end
 end

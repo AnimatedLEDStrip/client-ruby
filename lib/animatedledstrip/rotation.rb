@@ -18,88 +18,54 @@
 #   OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 #   THE SOFTWARE.
 
-class ColorContainer
-  attr_accessor :colors
+class DegreesRotation
+  attr_accessor :x_rotation, :y_rotation, :z_rotation, :rotation_order
 
-  def initialize(colors = [])
-    @colors = colors
+  def initialize(x_rotation = 0.0, y_rotation = 0.0, z_rotation = 0.0,
+                 rotation_order = %w[ROTATE_Z, ROTATE_X])
+    @x_rotation = x_rotation
+    @y_rotation = y_rotation
+    @z_rotation = z_rotation
+    @rotation_order = rotation_order
   end
-
-  # # @return [String]
-  # def json
-  #   @colors.each { |c| raise TypeError unless c.is_a? Integer }
-  #   str = '{"colors":['
-  #   @colors.each do |c|
-  #     str.concat(c.to_s, ',')
-  #   end
-  #   str.delete_suffix! ','
-  #   str + ']}'
-  # end
-
-  def add_color(color)
-    @colors.push(color)
-  end
-
-  # def self.new_from_json(json_str)
-  #   cc = ColorContainer.new
-  #   json_str["colors"].each { |c| cc.add_color c }
-  #
-  #   cc
-  # end
 
   def to_json(*args)
     {
         JSON.create_id => self.class.name,
-        :colors => self.colors,
+        :xRotation => self.x_rotation,
+        :yRotation => self.y_rotation,
+        :zRotation => self.z_rotation,
+        :rotationOrder => self.rotation_order
     }.to_json(*args)
   end
 
   def self.json_create(object)
-    new(object['colors'])
+    new(object['xRotation'], object['yRotation'], object['zRotation'], object['rotationOrder'])
   end
-
 end
 
-class PreparedColorContainer
-  attr_accessor :colors, :original_colors
+class RadiansRotation
+  attr_accessor :x_rotation, :y_rotation, :z_rotation, :rotation_order
 
-  def initialize(colors = [], original_colors = [])
-    @colors = colors
-    @original_colors = original_colors
+  def initialize(x_rotation = 0.0, y_rotation = 0.0, z_rotation = 0.0,
+                 rotation_order = %w[ROTATE_Z, ROTATE_X])
+    @x_rotation = x_rotation
+    @y_rotation = y_rotation
+    @z_rotation = z_rotation
+    @rotation_order = rotation_order
   end
-
-  # # @return [String]
-  # def json
-  #   @colors.each { |c| raise TypeError unless c.is_a? Integer }
-  #   str = '{"colors":['
-  #   @colors.each do |c|
-  #     str.concat(c.to_s, ',')
-  #   end
-  #   str.delete_suffix! ','
-  #   str + ']}'
-  # end
-
-  def add_color(color)
-    @colors.push(color)
-  end
-
-  # def self.new_from_json(json_str)
-  #   cc = ColorContainer.new
-  #   json_str["colors"].each { |c| cc.add_color c }
-  #
-  #   cc
-  # end
 
   def to_json(*args)
     {
         JSON.create_id => self.class.name,
-        :colors => self.colors,
-        :originalColors => self.original_colors
+        :xRotation => self.x_rotation,
+        :yRotation => self.y_rotation,
+        :zRotation => self.z_rotation,
+        :rotationOrder => self.rotation_order
     }.to_json(*args)
   end
 
   def self.json_create(object)
-    new(object['colors'], object['originalColors'])
+    new(object['xRotation'], object['yRotation'], object['zRotation'], object['rotationOrder'])
   end
-
 end

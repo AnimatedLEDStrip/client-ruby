@@ -19,6 +19,7 @@ Gem::Specification.new do |spec|
   spec.add_runtime_dependency "json"
   spec.add_runtime_dependency "simplecov"
   spec.add_runtime_dependency "url"
+  spec.add_runtime_dependency "httparty"
 
   spec.add_development_dependency "mocha"
   spec.add_development_dependency "bundler"

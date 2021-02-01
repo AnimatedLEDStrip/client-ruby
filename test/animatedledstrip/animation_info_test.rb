@@ -21,8 +21,36 @@
 require_relative "../test_helper"
 require "minitest"
 require_relative "../../lib/animatedledstrip/animation_info"
+require_relative "../../lib/animatedledstrip/als_http_client"
 
 class AnimationInfoTest < Minitest::Test
+  def test_new
+    # info = AnimationInfo.new
+    # info.name = 'abf'
+    #
+    # puts info.to_json
+    # puts 'a'
+
+    s = ALSHttpClient.new('10.0.0.91')
+    # a = s.get_animation_info( "pixel run")
+    # puts s.get_supported_animations_hash
+    # puts s.get_running_animation_params('22004510')
+    # puts s.end_animation('22004510')
+    puts s.get_section 'fullStrip'
+    puts s.get_sections_hash
+    # sect = Section.new("sect2", [5, 6, 7, 8, 9, 14])
+    # puts s.create_new_section(sect)
+    anim = AnimationToRunParams.new("pixel run", [ColorContainer.new([0xFF00])])
+    puts s.start_animation(anim)
+    puts s.get_current_strip_color
+    s.clear_strip
+    # puts a.int_params.length
+    # puts s.get_animation_info("fireworks")
+    # puts s.get_supported_animations_map
+    # puts 'b'
+
+  end
+
   def test_initialization
     info = AnimationInfo.new
 
